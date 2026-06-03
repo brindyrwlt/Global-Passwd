@@ -1,0 +1,6 @@
+name: GlobalPasswd
+version: '${version}'
+
+main: fr.brindy.globalpasswd.Main
+api-version: '26.1.2'
+load: POSTWORLD
