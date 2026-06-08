@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -24,10 +23,8 @@ public class AuthService {
     private static final int LENGTH = 50;
 
     private final JavaPlugin plugin;
-    private final MessageDigest digest;
 
-    public AuthService(JavaPlugin plugin) throws NoSuchAlgorithmException {
-        this.digest = MessageDigest.getInstance("SHA-256");
+    public AuthService(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -52,8 +49,11 @@ public class AuthService {
     }
 
     private byte[] getHash(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        InputStream saltFile = this.getClass().getClassLoader().getResourceAsStream("salt");
-        byte[] salt = Objects.requireNonNull(saltFile).readAllBytes();
+        byte[] salt = null;
+
+        try (InputStream saltFile = this.getClass().getClassLoader().getResourceAsStream("salt")) {
+            salt = Objects.requireNonNull(saltFile).readAllBytes();
+        }
 
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, LENGTH);
         SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");

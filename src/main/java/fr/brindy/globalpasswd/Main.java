@@ -1,30 +1,24 @@
 package fr.brindy.globalpasswd;
 
+import fr.brindy.globalpasswd.events.PlayerConnectionEvent;
 import fr.brindy.globalpasswd.services.AuthService;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.logging.Level;
 
 public final class Main extends JavaPlugin {
 
-    private ComponentLogger logger = this.getComponentLogger();
+    private final ComponentLogger logger = this.getComponentLogger();
 
     @Override
     public void onEnable() {
+        AuthService authService = new AuthService(this);
+        registerEvent(new PlayerConnectionEvent(authService, logger));
 
-
-        try {
-            AuthService authService = new AuthService(this);
-
-            authService.savePassword("test");
-            getLogger().log(Level.INFO, String.valueOf(authService.compare("erfzerh")));
-        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
+        logger.info(Component.text("The Global Passwd plugin is enabled. Your server is now protected!").color(TextColor.color(0xFFFFFF)));
+        logger.info(Component.text("If you want to change your password, please enter 'passwd change' in your server console."));
     }
 
     @Override
@@ -32,4 +26,7 @@ public final class Main extends JavaPlugin {
         // Plugin shutdown logic
     }
 
+    private void registerEvent(Listener event) {
+        getServer().getPluginManager().registerEvents(event, this);
+    }
 }
