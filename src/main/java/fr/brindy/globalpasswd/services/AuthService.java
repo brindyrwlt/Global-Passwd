@@ -1,5 +1,6 @@
 package fr.brindy.globalpasswd.services;
 
+import fr.brindy.globalpasswd.utils.exceptions.DirectoryCreationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.crypto.SecretKey;
@@ -8,9 +9,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -41,15 +40,18 @@ public class AuthService {
     public void savePassword(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         File folder = plugin.getDataFolder();
         if(!folder.exists()) {
-            folder.mkdir();
+            boolean isCreated = folder.mkdir();
+            if(!isCreated) {
+                throw new DirectoryCreationException();
+            }
         }
 
-        Path path = Paths.get(folder.getPath() + File.separator + "global.key");
+        Path path = Paths.get(folder.getCanonicalPath() + File.separator + "global.key");
         Files.write(path, getHash(password));
     }
 
     private byte[] getHash(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] salt = null;
+        byte[] salt;
 
         try (InputStream saltFile = this.getClass().getClassLoader().getResourceAsStream("salt")) {
             salt = Objects.requireNonNull(saltFile).readAllBytes();
