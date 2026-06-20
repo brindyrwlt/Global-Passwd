@@ -33,4 +33,7 @@ public class Constants {
     private static final Component PLUGIN_NAME = Component.text("Global Passwd").color(TextColor.color(0xB0DCCB));
     public static final Component PLUGIN_TAG = Component.text("[").append(Constants.PLUGIN_NAME).append(Component.text("] "));
     public static final Component PASSWD_CHANGE_SUCCESS_MESSAGE = Constants.PLUGIN_TAG.append(Component.text("The server password has been changed."));
+    public static final Component PLUGIN_START_MESSAGE_1 = Component.text("The Global Passwd plugin is enabled. Your server is now protected!").color(TextColor.color(0xFFFFFF));
+    public static final Component PLUGIN_START_MESSAGE_2 = Component.text("If you want to change your password, please enter the ").append(Component.text("'passwd change <new password>'").color(TextColor.color(0xFFFFFF)).append(Component.text(" command.")));
+
 }

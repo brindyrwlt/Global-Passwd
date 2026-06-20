@@ -3,9 +3,8 @@ package fr.brindy.globalpasswd;
 import fr.brindy.globalpasswd.commands.PasswdCommand;
 import fr.brindy.globalpasswd.events.PlayerConnectionEvent;
 import fr.brindy.globalpasswd.services.AuthService;
+import fr.brindy.globalpasswd.utils.Constants;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,13 +28,12 @@ public final class Main extends JavaPlugin {
             commands.registrar().register(passwdCommand.getCommand());
         });
 
-        logger.info(Component.text("The Global Passwd plugin is enabled. Your server is now protected!").color(TextColor.color(0xFFFFFF)));
-        logger.info(Component.text("If you want to change your password, please enter 'passwd change' in your server console."));
+        printStartMessage();
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
+    private void printStartMessage() {
+        logger.info(Constants.PLUGIN_START_MESSAGE_1);
+        logger.info(Constants.PLUGIN_START_MESSAGE_2);
     }
 
     private void registerEvent(Listener event) {
