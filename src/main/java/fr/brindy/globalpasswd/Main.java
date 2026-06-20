@@ -15,7 +15,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         AuthService authService = new AuthService(this);
-        registerEvent(new PlayerConnectionEvent(authService, logger));
+        registerEvent(new PlayerConnectionEvent(authService));
 
         logger.info(Component.text("The Global Passwd plugin is enabled. Your server is now protected!").color(TextColor.color(0xFFFFFF)));
         logger.info(Component.text("If you want to change your password, please enter 'passwd change' in your server console."));

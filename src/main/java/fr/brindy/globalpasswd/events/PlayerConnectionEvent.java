@@ -15,7 +15,6 @@ import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -31,12 +30,11 @@ public class PlayerConnectionEvent implements Listener {
      */
     private final Map<UUID, CompletableFuture<Boolean>> connecting = new HashMap<>();
     private final AuthService authService;
-    private final ComponentLogger logger;
 
+    private static final Dialog authDialog = createDialog();
 
-    public PlayerConnectionEvent(AuthService authService, ComponentLogger logger) {
+    public PlayerConnectionEvent(AuthService authService) {
         this.authService = authService;
-        this.logger = logger;
     }
 
     @EventHandler
@@ -47,37 +45,8 @@ public class PlayerConnectionEvent implements Listener {
             return;
         }
 
-        Dialog dialog = Dialog.create(
-                builder -> builder.empty().base(
-                        DialogBase.builder(Constants.DIALOG_TITLE)
-                                .canCloseWithEscape(false)
-                                .inputs(List.of(
-                                    DialogInput.text(Constants.PASSWORD_INPUT_KEY, Constants.PASSWORD_INPUT_TEXT)
-                                            .width(500)
-                                            .build()
-                                ))
-                                .build()
-                ).type(
-                        DialogType.multiAction(List.of(
-                                ActionButton.create(
-                                    Constants.CONFIRM_BUTTON_TEXT,
-                                    Constants.CONFIRM_BUTTON_TOOLTIP,
-                                    80,
-                                    DialogAction.customClick(Keys.CONFIRM.toKey(), null)
-                                ),
-                                ActionButton.create(
-                                    Constants.CANCEL_BUTTON_TEXT,
-                                    Constants.CANCEL_BUTTON_TOOLTIP,
-                                    80,
-                                    DialogAction.customClick(Keys.CANCEL.toKey(), null)
-                                )
-                        ))
-                        .build()
-                )
-        );
-
         Audience audience = connection.getAudience();
-        audience.showDialog(dialog);
+        audience.showDialog(authDialog);
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         future.completeOnTimeout(false, Constants.TIMEOUT_TIME, Constants.TIMEOUT_UNIT);
@@ -100,12 +69,8 @@ public class PlayerConnectionEvent implements Listener {
                 return;
             }
 
-            logger.info("ça passe ici");
-
             String action = event.getIdentifier().toString();
             if(Objects.equals(action, Keys.CANCEL.toString()) || Objects.equals(action, Keys.CONFIRM.toString())) {
-                logger.info("boutons reconnus");
-
                 DialogResponseView dialog = event.getDialogResponseView();
                 if(dialog == null) {
                     return;
@@ -115,15 +80,12 @@ public class PlayerConnectionEvent implements Listener {
 
                 try {
                     if(authService.compare(passwordEntered)) {
-                        logger.info("bon mot de passe");
                         connecting.get(uuid).complete(true);
                         return;
                     }
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
                     throw new RuntimeException(e);
                 }
-
-                logger.info(passwordEntered);
 
                 connecting.remove(uuid);
                 disconnectPlayer(connection, Constants.WRONG_PASSWORD_DISCONNECTION_MESSAGE);
@@ -133,5 +95,36 @@ public class PlayerConnectionEvent implements Listener {
 
     private void disconnectPlayer(PlayerConfigurationConnection connection, Component reason) {
         connection.disconnect(reason);
+    }
+
+    private static Dialog createDialog() {
+        return Dialog.create(
+                builder -> builder.empty().base(
+                        DialogBase.builder(Constants.DIALOG_TITLE)
+                                .canCloseWithEscape(false)
+                                .inputs(List.of(
+                                        DialogInput.text(Constants.PASSWORD_INPUT_KEY, Constants.PASSWORD_INPUT_TEXT)
+                                                .width(Constants.INPUT_WIDTH)
+                                                .build()
+                                ))
+                                .build()
+                ).type(
+                        DialogType.multiAction(List.of(
+                                        ActionButton.create(
+                                                Constants.CONFIRM_BUTTON_TEXT,
+                                                Constants.CONFIRM_BUTTON_TOOLTIP,
+                                                Constants.BUTTON_WIDTH,
+                                                DialogAction.customClick(Keys.CONFIRM.toKey(), null)
+                                        ),
+                                        ActionButton.create(
+                                                Constants.CANCEL_BUTTON_TEXT,
+                                                Constants.CANCEL_BUTTON_TOOLTIP,
+                                                Constants.BUTTON_WIDTH,
+                                                DialogAction.customClick(Keys.CANCEL.toKey(), null)
+                                        )
+                                ))
+                                .build()
+                )
+        );
     }
 }
