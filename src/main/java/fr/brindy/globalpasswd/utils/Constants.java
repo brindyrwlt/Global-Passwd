@@ -6,8 +6,9 @@ import net.kyori.adventure.text.format.TextColor;
 import java.util.concurrent.TimeUnit;
 
 public class Constants {
-    // Informations
+    // Technical informations
     public static final String PLUGIN_KEY = "global-passwd";
+    public static final String KEY_FILE_NAME = "global.key";
 
     // Permissions
     public static final String PASSWD_CHANGE_PERMISSION = "globalpasswd.passwd.change";

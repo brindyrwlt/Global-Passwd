@@ -1,5 +1,7 @@
 package fr.brindy.globalpasswd.services;
 
+import fr.brindy.globalpasswd.utils.Constants;
+import fr.brindy.globalpasswd.utils.DataFolder;
 import fr.brindy.globalpasswd.utils.exceptions.DirectoryCreationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,21 +34,12 @@ public class AuthService {
     }
 
     private byte[] getPassword() throws IOException {
-        File folder = plugin.getDataFolder();
-        Path path = Paths.get(folder.getPath() + File.separator + "global.key");
+        Path path = getKeyFile();
         return Files.readAllBytes(path);
     }
 
     public void savePassword(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        File folder = plugin.getDataFolder();
-        if(!folder.exists()) {
-            boolean isCreated = folder.mkdir();
-            if(!isCreated) {
-                throw new DirectoryCreationException();
-            }
-        }
-
-        Path path = Paths.get(folder.getCanonicalPath() + File.separator + "global.key");
+        Path path = getKeyFile();
         Files.write(path, getHash(password));
     }
 
@@ -61,5 +54,10 @@ public class AuthService {
         SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         SecretKey key = skf.generateSecret(spec);
         return key.getEncoded();
+    }
+
+    private Path getKeyFile() throws IOException {
+        File folder = DataFolder.getDataFolder(plugin);
+        return Paths.get(folder.getCanonicalPath() + File.separator + Constants.KEY_FILE_NAME);
     }
 }
