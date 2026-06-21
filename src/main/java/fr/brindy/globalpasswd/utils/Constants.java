@@ -9,6 +9,7 @@ public class Constants {
     // Technical informations
     public static final String PLUGIN_KEY = "global-passwd";
     public static final String KEY_FILE_NAME = "global.key";
+    public static final String SESSIONS_FILE_NAME = "sessions.db";
 
     // Permissions
     public static final String PASSWD_CHANGE_PERMISSION = "globalpasswd.passwd.change";
@@ -30,11 +31,16 @@ public class Constants {
     public static final Component TIMEOUT_DISCONNECTION_MESSAGE = Component.text("You did not enter any password within " + TIMEOUT_TIME + " minute" + (TIMEOUT_TIME > 1 ? "s" : "") + ", you got disconnected.");
     public static final Component WRONG_PASSWORD_DISCONNECTION_MESSAGE = Component.text("You entered the wrong password. Please try again.");
 
+    // Sessions
+    public static final int SESSION_DURATION_DAY = 30;
+    public static final int SESSION_DURATION_HOURS = 0;
+    public static final int SESSION_DURATION_MINUTES = 0;
+    public static final int SESSION_DURATION_SECONDS = 0;
+
     // Messages
     private static final Component PLUGIN_NAME = Component.text("Global Passwd").color(TextColor.color(0xB0DCCB));
     public static final Component PLUGIN_TAG = Component.text("[").append(Constants.PLUGIN_NAME).append(Component.text("] "));
     public static final Component PASSWD_CHANGE_SUCCESS_MESSAGE = Constants.PLUGIN_TAG.append(Component.text("The server password has been changed."));
     public static final Component PLUGIN_START_MESSAGE_1 = Component.text("The Global Passwd plugin is enabled. Your server is now protected!").color(TextColor.color(0xFFFFFF));
     public static final Component PLUGIN_START_MESSAGE_2 = Component.text("If you want to change your password, please enter the ").append(Component.text("'passwd change <new password>'").color(TextColor.color(0xFFFFFF)).append(Component.text(" command.")));
-
 }

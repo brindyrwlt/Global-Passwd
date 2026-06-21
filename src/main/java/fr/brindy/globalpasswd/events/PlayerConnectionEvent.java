@@ -1,6 +1,7 @@
 package fr.brindy.globalpasswd.events;
 
 import fr.brindy.globalpasswd.services.AuthService;
+import fr.brindy.globalpasswd.services.SessionService;
 import fr.brindy.globalpasswd.utils.Constants;
 import fr.brindy.globalpasswd.utils.Keys;
 import io.papermc.paper.connection.PlayerConfigurationConnection;
@@ -29,12 +30,15 @@ public class PlayerConnectionEvent implements Listener {
      * Stores the UUIDs of the players trying to connect. Used to kick them when time to enter password is out.
      */
     private final Map<UUID, CompletableFuture<Boolean>> connecting = new HashMap<>();
+
     private final AuthService authService;
+    private final SessionService sessionService;
 
     private static final Dialog authDialog = createDialog();
 
-    public PlayerConnectionEvent(AuthService authService) {
+    public PlayerConnectionEvent(AuthService authService, SessionService sessionService) {
         this.authService = authService;
+        this.sessionService = sessionService;
     }
 
     @EventHandler
@@ -42,6 +46,10 @@ public class PlayerConnectionEvent implements Listener {
         PlayerConfigurationConnection connection = event.getConnection();
         UUID uuid = connection.getProfile().getId();
         if(uuid == null) {
+            return;
+        }
+
+        if(sessionService.isSessionValid(uuid.toString())) {
             return;
         }
 
@@ -81,6 +89,7 @@ public class PlayerConnectionEvent implements Listener {
                 try {
                     if(authService.compare(passwordEntered)) {
                         connecting.get(uuid).complete(true);
+                        sessionService.validateSession(uuid.toString());
                         return;
                     }
                 } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {

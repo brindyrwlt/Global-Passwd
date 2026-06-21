@@ -2,7 +2,6 @@ package fr.brindy.globalpasswd.services;
 
 import fr.brindy.globalpasswd.utils.Constants;
 import fr.brindy.globalpasswd.utils.DataFolder;
-import fr.brindy.globalpasswd.utils.exceptions.DirectoryCreationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.crypto.SecretKey;
@@ -57,7 +56,7 @@ public class AuthService {
     }
 
     private Path getKeyFile() throws IOException {
-        File folder = DataFolder.getDataFolder(plugin);
+        File folder = DataFolder.getDataFolder(this.plugin);
         return Paths.get(folder.getCanonicalPath() + File.separator + Constants.KEY_FILE_NAME);
     }
 }
