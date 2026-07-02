@@ -1,0 +1,16 @@
+# Config file for the Global Passwd plugin
+# Every change in this file will need you to restart the server or the plugin
+enabled: true
+
+# Time spent before timing out player who doesn't enter any password, in seconds
+timeout-duration: 120
+
+# System that let players not enter the password for a certain duration of time if they got it right once
+# When their session is expired, they need to enter the password again
+sessions-enabled: true
+
+# Duration of a player session (skipped if sessions are disable)
+session-duration-days: 30
+session-duration-hours: 0
+session-duration-minutes: 0
+session-duration-seconds: 0

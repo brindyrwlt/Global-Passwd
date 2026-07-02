@@ -1,6 +1,7 @@
 package fr.brindy.globalpasswd.events;
 
 import fr.brindy.globalpasswd.services.AuthService;
+import fr.brindy.globalpasswd.services.ConfigService;
 import fr.brindy.globalpasswd.services.SessionService;
 import fr.brindy.globalpasswd.utils.Constants;
 import fr.brindy.globalpasswd.utils.Keys;
@@ -33,71 +34,83 @@ public class PlayerConnectionEvent implements Listener {
 
     private final AuthService authService;
     private final SessionService sessionService;
+    private final ConfigService configService;
 
     private static final Dialog authDialog = createDialog();
 
-    public PlayerConnectionEvent(AuthService authService, SessionService sessionService) {
+    public PlayerConnectionEvent(AuthService authService, SessionService sessionService, ConfigService configService) {
         this.authService = authService;
         this.sessionService = sessionService;
+        this.configService = configService;
     }
 
     @EventHandler
     public void onConnection(AsyncPlayerConnectionConfigureEvent event) {
-        PlayerConfigurationConnection connection = event.getConnection();
-        UUID uuid = connection.getProfile().getId();
-        if(uuid == null) {
-            return;
+        if(configService.getEnabled()) {
+            PlayerConfigurationConnection connection = event.getConnection();
+            UUID uuid = connection.getProfile().getId();
+            if(uuid == null) {
+                return;
+            }
+
+            if(sessionService != null && sessionService.isSessionValid(uuid.toString())) {
+                return;
+            }
+
+            Audience audience = connection.getAudience();
+            audience.showDialog(authDialog);
+
+            long timeoutTime = configService.getTimeoutTime();
+            CompletableFuture<Boolean> future = new CompletableFuture<>();
+            future.completeOnTimeout(false, timeoutTime, Constants.TIMEOUT_UNIT);
+
+            connecting.put(uuid, future);
+
+            if(!future.join()) {
+                audience.closeDialog();
+                disconnectPlayer(connection, Constants.getTimeoutDisconnectionMessage(timeoutTime));
+            }
+
+            connecting.remove(uuid);
         }
-
-        if(sessionService.isSessionValid(uuid.toString())) {
-            return;
-        }
-
-        Audience audience = connection.getAudience();
-        audience.showDialog(authDialog);
-
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-        future.completeOnTimeout(false, Constants.TIMEOUT_TIME, Constants.TIMEOUT_UNIT);
-
-        connecting.put(uuid, future);
-
-        if(!future.join()) {
-            audience.closeDialog();
-            disconnectPlayer(connection, Constants.TIMEOUT_DISCONNECTION_MESSAGE);
-        }
-
-        connecting.remove(uuid);
     }
 
     @EventHandler
     public void onButtonClick(PlayerCustomClickEvent event) {
-        if(event.getCommonConnection() instanceof PlayerConfigurationConnection connection) {
-            UUID uuid = connection.getProfile().getId();
-            if (uuid == null) {
-                return;
-            }
-
-            String action = event.getIdentifier().toString();
-            if(Objects.equals(action, Keys.CANCEL.toString()) || Objects.equals(action, Keys.CONFIRM.toString())) {
-                DialogResponseView dialog = event.getDialogResponseView();
-                if(dialog == null) {
+        if(configService.getEnabled()) {
+            if(event.getCommonConnection() instanceof PlayerConfigurationConnection connection) {
+                UUID uuid = connection.getProfile().getId();
+                if(uuid == null) {
                     return;
                 }
 
-                String passwordEntered = dialog.getText(Constants.PASSWORD_INPUT_KEY);
-
-                try {
-                    if(authService.compare(passwordEntered)) {
-                        connecting.get(uuid).complete(true);
-                        sessionService.validateSession(uuid.toString());
+                String action = event.getIdentifier().toString();
+                if(Objects.equals(action, Keys.CONFIRM.toString())) {
+                    DialogResponseView dialog = event.getDialogResponseView();
+                    if(dialog == null) {
                         return;
                     }
-                } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                    throw new RuntimeException(e);
-                }
 
-                connecting.remove(uuid);
-                disconnectPlayer(connection, Constants.WRONG_PASSWORD_DISCONNECTION_MESSAGE);
+                    String passwordEntered = dialog.getText(Constants.PASSWORD_INPUT_KEY);
+
+                    try {
+                        if(authService.compare(passwordEntered)) {
+                            connecting.get(uuid).complete(true);
+
+                            if(sessionService != null) {
+                                sessionService.validateSession(uuid.toString());
+                            }
+                            return;
+                        }
+                    } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    connecting.remove(uuid);
+                    disconnectPlayer(connection, Constants.WRONG_PASSWORD_DISCONNECTION_MESSAGE);
+                } else if(Objects.equals(action, Keys.CANCEL.toString())) {
+                    disconnectPlayer(connection, Component.empty());
+                }
             }
         }
     }

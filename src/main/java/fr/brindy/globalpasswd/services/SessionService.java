@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 public class SessionService {
     private final JavaPlugin plugin;
+    private final ConfigService configService;
     private final Connection connection;
 
     private static final String getSessionExistenceQuery = """
@@ -39,8 +40,9 @@ public class SessionService {
         WHERE uuid = ?;
     """;
 
-    public SessionService(JavaPlugin plugin) throws SQLException, DirectoryCreationException {
+    public SessionService(JavaPlugin plugin, ConfigService configService) throws SQLException, DirectoryCreationException {
         this.plugin = plugin;
+        this.configService = configService;
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + getDatabasePath());
 
         createDatabase();
@@ -108,10 +110,10 @@ public class SessionService {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(utilExpirationDate);
-        calendar.add(Calendar.DAY_OF_YEAR, Constants.SESSION_DURATION_DAY);
-        calendar.add(Calendar.HOUR, Constants.SESSION_DURATION_HOURS);
-        calendar.add(Calendar.MINUTE, Constants.SESSION_DURATION_MINUTES);
-        calendar.add(Calendar.SECOND, Constants.SESSION_DURATION_SECONDS);
+        calendar.add(Calendar.DAY_OF_YEAR, configService.getSessionDayDuration());
+        calendar.add(Calendar.HOUR, configService.getSessionHoursDuration());
+        calendar.add(Calendar.MINUTE, configService.getSessionMinutesDuration());
+        calendar.add(Calendar.SECOND, configService.getSessionSecondsDuration());
 
         utilExpirationDate = calendar.getTime();
 
