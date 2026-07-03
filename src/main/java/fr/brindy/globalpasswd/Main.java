@@ -44,7 +44,7 @@ public final class Main extends JavaPlugin {
 
         // Commands
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            PasswdCommand passwdCommand = new PasswdCommand(authService);
+            PasswdCommand passwdCommand = new PasswdCommand(authService, configService);
 
             commands.registrar().register(passwdCommand.getCommand());
         });
