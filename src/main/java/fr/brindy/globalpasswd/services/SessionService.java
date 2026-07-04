@@ -7,7 +7,13 @@ import fr.brindy.globalpasswd.utils.exceptions.DirectoryCreationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Calendar;
 
 public class SessionService {
@@ -65,9 +71,11 @@ public class SessionService {
             statement.setString(1, uuid);
             ResultSet result = statement.executeQuery();
 
+            Date connectionDate = result.getDate(1);
+            Date expirationDate = getExpirationDate(connectionDate);
+
             java.util.Date utilCurrentDate = new java.util.Date();
-            Date currentDate = new java.sql.Date(utilCurrentDate.getTime());
-            java.sql.Date expirationDate = result.getDate(1);
+            Date currentDate = new Date(utilCurrentDate.getTime());
 
             return expirationDate.after(currentDate);
         } catch (SQLException e) {
@@ -88,7 +96,7 @@ public class SessionService {
     private void savePlayer(String uuid) {
         try(PreparedStatement statement = this.connection.prepareStatement(savePlayerSessionQuery)) {
             statement.setString(1, uuid);
-            statement.setDate(2, getExpirationDate());
+            statement.setDate(2, getCurrentDate());
             statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -97,7 +105,7 @@ public class SessionService {
 
     private void updatePlayer(String uuid) {
         try(PreparedStatement statement = this.connection.prepareStatement(updatePlayerSessionQuery)) {
-            statement.setDate(1, getExpirationDate());
+            statement.setDate(1, getCurrentDate());
             statement.setString(2, uuid);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -105,19 +113,21 @@ public class SessionService {
         }
     }
 
-    private java.sql.Date getExpirationDate() {
-        java.util.Date utilExpirationDate = new java.util.Date();
-
+    private Date getExpirationDate(Date connectionDate) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(utilExpirationDate);
+        calendar.setTime(connectionDate);
         calendar.add(Calendar.DAY_OF_YEAR, configService.getSessionDayDuration());
         calendar.add(Calendar.HOUR, configService.getSessionHoursDuration());
         calendar.add(Calendar.MINUTE, configService.getSessionMinutesDuration());
         calendar.add(Calendar.SECOND, configService.getSessionSecondsDuration());
 
-        utilExpirationDate = calendar.getTime();
+        java.util.Date utilExpirationDate = calendar.getTime();
+        return new Date(utilExpirationDate.getTime());
+    }
 
-        return new java.sql.Date(utilExpirationDate.getTime());
+    private Date getCurrentDate() {
+        java.util.Date utilCurrentDate = new java.util.Date();
+        return new Date(utilCurrentDate.getTime());
     }
 
     private void createDatabase() {
