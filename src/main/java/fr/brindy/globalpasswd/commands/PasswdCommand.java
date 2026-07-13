@@ -33,6 +33,16 @@ public class PasswdCommand {
 
     public LiteralCommandNode<CommandSourceStack> getCommand() {
         return Commands.literal("passwd")
+                .then(toggleArgument(
+                        "enable",
+                        context -> togglePlugin(context, true),
+                        Constants.PASSWD_TOGGLE_PERMISSION
+                ))
+                .then(toggleArgument(
+                        "disable",
+                        context -> togglePlugin(context, false),
+                        Constants.PASSWD_TOGGLE_PERMISSION
+                ))
                 .then(
                     Commands.literal("change")
                         .requires(Commands.restricted(
@@ -43,8 +53,19 @@ public class PasswdCommand {
                                 .executes(this::changePassword)
                         )
                 )
-                .then(togglePluginArgument("enable", true))
-                .then(togglePluginArgument("disable", false))
+                .then(
+                    Commands.literal("sessions")
+                        .then(toggleArgument(
+                                "enable",
+                                context -> toggleSessions(context, true),
+                                Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
+                        ))
+                        .then(toggleArgument(
+                                "disable",
+                                context -> toggleSessions(context, false),
+                                Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
+                        ))
+                )
                 .build();
     }
 
@@ -58,12 +79,12 @@ public class PasswdCommand {
         }
     }
 
-    private LiteralArgumentBuilder<CommandSourceStack> togglePluginArgument(String argumentName, boolean isEnabled) {
+    private LiteralArgumentBuilder<CommandSourceStack> toggleArgument(String argumentName, Command<CommandSourceStack> action, String permission) {
         return Commands.literal(argumentName)
                 .requires(Commands.restricted(
-                        source -> source.getSender().hasPermission(Constants.PASSWD_TOGGLE_PERMISSION)
+                        source -> source.getSender().hasPermission(permission)
                 ))
-                .executes(context -> togglePlugin(context, isEnabled));
+                .executes(action);
     }
 
     private int togglePlugin(CommandContext<CommandSourceStack> context, boolean isEnabled) {
@@ -74,6 +95,18 @@ public class PasswdCommand {
             configService.setEnabled(isEnabled);
             broadcast(isEnabled ? Constants.PASSWD_ENABLE_SUCCESS_MESSAGE
                                 : Constants.PASSWD_DISABLE_SUCCESS_MESSAGE);
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int toggleSessions(CommandContext<CommandSourceStack> context, boolean isEnabled) {
+        if(configService.getSessionsEnabled() == isEnabled) {
+            messageUser(context.getSource().getSender(), isEnabled ? Constants.PASSWD_SESSIONS_ALREADY_ENABLED_MESSAGE
+                                                                   : Constants.PASSWD_SESSIONS_ALREADY_DISABLED_MESSAGE);
+        } else {
+            configService.setSessionsEnabled(isEnabled);
+            broadcast(isEnabled ? Constants.PASSWD_ENABLE_SESSIONS_SUCCESS_MESSAGE
+                                : Constants.PASSWD_DISABLE_SESSIONS_SUCCESS_MESSAGE);
         }
         return Command.SINGLE_SUCCESS;
     }

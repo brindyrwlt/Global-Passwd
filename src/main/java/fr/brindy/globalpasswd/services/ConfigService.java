@@ -31,6 +31,11 @@ public class ConfigService {
         return config.getBoolean("sessions-enabled");
     }
 
+    public void setSessionsEnabled(boolean isEnabled) {
+        config.set("sessions-enabled", isEnabled);
+        saveConfig();
+    }
+
     public int getSessionDayDuration() {
         return config.getInt("session-duration-days");
     }
