@@ -29,7 +29,7 @@ public final class Main extends JavaPlugin {
         AuthService authService = new AuthService(this);
 
         File configFile = new File(this.getDataFolder(), Constants.CONFIG_FILE_NAME);
-        ConfigService configService = new ConfigService(this.getConfig(), configFile, this);
+        ConfigService configService = new ConfigService(this.getConfig(), configFile);
 
         try {
             sessionService = new SessionService(this, configService);
