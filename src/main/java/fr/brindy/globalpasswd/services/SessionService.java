@@ -19,7 +19,8 @@ import java.util.Calendar;
 public class SessionService {
     private final JavaPlugin plugin;
     private final ConfigService configService;
-    private final Connection connection;
+    private Connection connection;
+    private boolean isEnabled;
 
     private static final String getSessionExistenceQuery = """
         SELECT COUNT(*)
@@ -49,9 +50,10 @@ public class SessionService {
     public SessionService(JavaPlugin plugin, ConfigService configService) throws SQLException, DirectoryCreationException {
         this.plugin = plugin;
         this.configService = configService;
-        this.connection = DriverManager.getConnection("jdbc:sqlite:" + getDatabasePath());
 
-        createDatabase();
+        if(configService.getSessionsEnabled()) {
+            enableSessions();
+        }
     }
 
     public void validateSession(String uuid) {
@@ -93,6 +95,10 @@ public class SessionService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isEnabled() {
+        return this.isEnabled;
     }
 
     private boolean doesSessionExists(String uuid) {
@@ -162,7 +168,18 @@ public class SessionService {
         return folder.getAbsolutePath() + File.separator + Constants.SESSIONS_FILE_NAME;
     }
 
-    public void closeConnection() throws CloseDatabaseConnectionException {
+    public void enableSessions() {
+        try {
+            this.connection = DriverManager.getConnection("jdbc:sqlite:" + getDatabasePath());
+            createDatabase();
+        } catch (SQLException | DirectoryCreationException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.isEnabled = true;
+    }
+
+    public void disableSessions() throws CloseDatabaseConnectionException {
         try {
             if(this.connection != null && !this.connection.isClosed()) {
                 this.connection.close();
@@ -171,5 +188,6 @@ public class SessionService {
             throw new CloseDatabaseConnectionException(e.getMessage());
         }
 
+        this.isEnabled = false;
     }
 }

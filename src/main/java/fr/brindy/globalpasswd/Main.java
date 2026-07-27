@@ -19,7 +19,7 @@ public final class Main extends JavaPlugin {
 
     private final ComponentLogger logger = this.getComponentLogger();
 
-    SessionService sessionService;
+    private SessionService sessionService;
 
     @Override
     public void onEnable() {
@@ -29,15 +29,15 @@ public final class Main extends JavaPlugin {
         AuthService authService = new AuthService(this);
 
         File configFile = new File(this.getDataFolder(), Constants.CONFIG_FILE_NAME);
-        ConfigService configService = new ConfigService(this.getConfig(), configFile);
+        ConfigService configService = new ConfigService(this.getConfig(), configFile, this);
 
-        if(configService.getSessionsEnabled()) {
-            try {
-                sessionService = new SessionService(this, configService);
-            } catch (SQLException | DirectoryCreationException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            sessionService = new SessionService(this, configService);
+        } catch (SQLException | DirectoryCreationException e) {
+            throw new RuntimeException(e);
         }
+
+        configService.setSessionService(sessionService);
 
         // Events
         registerEvent(new PlayerConnectionEvent(authService, sessionService, configService));
@@ -54,7 +54,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.sessionService.closeConnection();
+        this.sessionService.disableSessions();
     }
 
     private void printStartMessage() {

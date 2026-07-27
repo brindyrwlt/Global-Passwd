@@ -53,7 +53,7 @@ public class PlayerConnectionEvent implements Listener {
                 return;
             }
 
-            if(sessionService != null && sessionService.isSessionValid(uuid.toString())) {
+            if(sessionService.isEnabled() && sessionService.isSessionValid(uuid.toString())) {
                 return;
             }
 
@@ -97,7 +97,7 @@ public class PlayerConnectionEvent implements Listener {
                         if(authService.compare(passwordEntered)) {
                             connecting.get(uuid).complete(true);
 
-                            if(sessionService != null) {
+                            if(sessionService.isEnabled()) {
                                 sessionService.validateSession(uuid.toString());
                             }
                             return;

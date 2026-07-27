@@ -125,7 +125,7 @@ public class PasswdCommand {
     }
 
     private int resetAllSessions(CommandContext<CommandSourceStack> context) {
-        if(sessionService != null) {
+        if(sessionService.isEnabled()) {
             sessionService.deleteAllSessions();
             broadcast(Constants.SESSIONS_RESET_ALL_MESSAGE);
         } else {
