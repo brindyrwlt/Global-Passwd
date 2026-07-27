@@ -16,7 +16,7 @@ public class Constants {
     public static final String PASSWD_CHANGE_PERMISSION = "globalpasswd.passwd.change";
     public static final String PASSWD_TOGGLE_PERMISSION = "globalpasswd.passwd.toggle";
     public static final String PASSWD_SESSIONS_TOGGLE_PERMISSION = "globalpasswd.passwd.sessions.toggle";
-    public static final String PASSWD_SESSIONS_RESET_PERMISSION = "globalpasswd.passwd.sessions.reset";
+    public static final String PASSWD_SESSIONS_RESET_ALL_PERMISSION = "globalpasswd.passwd.sessions.reset.all";
 
     // Dialog
     public static final Component DIALOG_TITLE = Component.text("This server is protected by Global Passwd.");
@@ -55,4 +55,6 @@ public class Constants {
     public static final Component PASSWD_DISABLE_SESSIONS_SUCCESS_MESSAGE = buildMessage("The session system has been disabled.");
     public static final Component PASSWD_SESSIONS_ALREADY_ENABLED_MESSAGE = buildMessage("The session system is already enabled.");
     public static final Component PASSWD_SESSIONS_ALREADY_DISABLED_MESSAGE = buildMessage("The session system is already disabled.");
+    public static final Component SESSIONS_RESET_ALL_MESSAGE = buildMessage("All player sessions have been reset. Everyone will need to re-enter the server password upon their next connection.");
+    public static final Component SESSIONS_DISABLED_ERROR_MESSAGE = buildMessage("The session system is disabled. Please enable it and restart the server to perform this action.");
 }

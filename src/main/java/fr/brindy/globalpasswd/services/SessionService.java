@@ -83,6 +83,18 @@ public class SessionService {
         }
     }
 
+    public void deleteAllSessions() {
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(
+                """
+                    DELETE FROM sessions;
+                    """
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private boolean doesSessionExists(String uuid) {
         try(PreparedStatement statement = this.connection.prepareStatement(getSessionExistenceQuery)) {
             statement.setString(1, uuid);

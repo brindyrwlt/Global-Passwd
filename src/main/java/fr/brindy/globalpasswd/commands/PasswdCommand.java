@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import fr.brindy.globalpasswd.services.AuthService;
 import fr.brindy.globalpasswd.services.ConfigService;
+import fr.brindy.globalpasswd.services.SessionService;
 import fr.brindy.globalpasswd.utils.Constants;
 import fr.brindy.globalpasswd.utils.exceptions.PasswordChangeException;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -23,22 +24,24 @@ import java.security.spec.InvalidKeySpecException;
 public class PasswdCommand {
     private final AuthService authService;
     private final ConfigService configService;
+    private final SessionService sessionService;
     private final Server server;
 
-    public PasswdCommand(AuthService authService, ConfigService configService) {
+    public PasswdCommand(AuthService authService, ConfigService configService, SessionService sessionService) {
         this.authService = authService;
         this.configService = configService;
+        this.sessionService = sessionService;
         this.server = Bukkit.getServer();
     }
 
     public LiteralCommandNode<CommandSourceStack> getCommand() {
         return Commands.literal("passwd")
-                .then(toggleArgument(
+                .then(simpleArgument(
                         "enable",
                         context -> togglePlugin(context, true),
                         Constants.PASSWD_TOGGLE_PERMISSION
                 ))
-                .then(toggleArgument(
+                .then(simpleArgument(
                         "disable",
                         context -> togglePlugin(context, false),
                         Constants.PASSWD_TOGGLE_PERMISSION
@@ -55,16 +58,24 @@ public class PasswdCommand {
                 )
                 .then(
                     Commands.literal("sessions")
-                        .then(toggleArgument(
+                        .then(simpleArgument(
                                 "enable",
                                 context -> toggleSessions(context, true),
                                 Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
                         ))
-                        .then(toggleArgument(
+                        .then(simpleArgument(
                                 "disable",
                                 context -> toggleSessions(context, false),
                                 Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
                         ))
+                        .then(
+                            Commands.literal("reset")
+                                .then(simpleArgument(
+                                    "all",
+                                    this::resetAllSessions,
+                                    Constants.PASSWD_SESSIONS_RESET_ALL_PERMISSION
+                                ))
+                        )
                 )
                 .build();
     }
@@ -79,7 +90,7 @@ public class PasswdCommand {
         }
     }
 
-    private LiteralArgumentBuilder<CommandSourceStack> toggleArgument(String argumentName, Command<CommandSourceStack> action, String permission) {
+    private LiteralArgumentBuilder<CommandSourceStack> simpleArgument(String argumentName, Command<CommandSourceStack> action, String permission) {
         return Commands.literal(argumentName)
                 .requires(Commands.restricted(
                         source -> source.getSender().hasPermission(permission)
@@ -96,6 +107,7 @@ public class PasswdCommand {
             broadcast(isEnabled ? Constants.PASSWD_ENABLE_SUCCESS_MESSAGE
                                 : Constants.PASSWD_DISABLE_SUCCESS_MESSAGE);
         }
+
         return Command.SINGLE_SUCCESS;
     }
 
@@ -108,6 +120,18 @@ public class PasswdCommand {
             broadcast(isEnabled ? Constants.PASSWD_ENABLE_SESSIONS_SUCCESS_MESSAGE
                                 : Constants.PASSWD_DISABLE_SESSIONS_SUCCESS_MESSAGE);
         }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int resetAllSessions(CommandContext<CommandSourceStack> context) {
+        if(sessionService != null) {
+            sessionService.deleteAllSessions();
+            broadcast(Constants.SESSIONS_RESET_ALL_MESSAGE);
+        } else {
+            broadcast(Constants.SESSIONS_DISABLED_ERROR_MESSAGE);
+        }
+
         return Command.SINGLE_SUCCESS;
     }
 
