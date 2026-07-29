@@ -37,12 +37,6 @@ public class ConfigService {
     }
 
     public void setSessionsEnabled(boolean isEnabled) {
-        if(isEnabled) {
-            sessionService.enableSessions();
-        } else {
-            sessionService.disableSessions();
-        }
-
         config.set("sessions-enabled", isEnabled);
         saveConfig();
     }

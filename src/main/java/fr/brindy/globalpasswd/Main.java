@@ -54,7 +54,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.sessionService.disableSessions();
+        this.sessionService.disconnectDatabase();
     }
 
     private void printStartMessage() {

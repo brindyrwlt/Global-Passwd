@@ -13,10 +13,13 @@ public class Constants {
     public static final String CONFIG_FILE_NAME = "config.yml";
 
     // Permissions
+    public static final String PASSWD_STATUS_PERMISSION = "globalpasswd.passwd.status";
     public static final String PASSWD_CHANGE_PERMISSION = "globalpasswd.passwd.change";
     public static final String PASSWD_TOGGLE_PERMISSION = "globalpasswd.passwd.toggle";
     public static final String PASSWD_SESSIONS_TOGGLE_PERMISSION = "globalpasswd.passwd.sessions.toggle";
-    public static final String PASSWD_SESSIONS_RESET_ALL_PERMISSION = "globalpasswd.passwd.sessions.reset.all";
+    public static final String PASSWD_SESSIONS_DELETE_ALL_PERMISSION = "globalpasswd.passwd.sessions.delete.all";
+    public static final String PASSWD_SESSIONS_DELETE_PLAYER_PERMISSION = "globalpasswd.passwd.sessions.delete.player";
+    public static final String PASSWD_SESSIONS_ADD_PLAYER_PERMISSION = "globalpasswd.passwd.sessions.add.player";
 
     // Dialog
     public static final Component DIALOG_TITLE = Component.text("This server is protected by Global Passwd.");
@@ -55,6 +58,26 @@ public class Constants {
     public static final Component PASSWD_DISABLE_SESSIONS_SUCCESS_MESSAGE = buildMessage("The session system has been disabled.");
     public static final Component PASSWD_SESSIONS_ALREADY_ENABLED_MESSAGE = buildMessage("The session system is already enabled.");
     public static final Component PASSWD_SESSIONS_ALREADY_DISABLED_MESSAGE = buildMessage("The session system is already disabled.");
-    public static final Component SESSIONS_RESET_ALL_MESSAGE = buildMessage("All player sessions have been reset. Everyone will need to re-enter the server password upon their next connection.");
+    public static final Component SESSIONS_DELETE_ALL_MESSAGE = buildMessage("All player sessions have been deleted. Everyone will need to re-enter the server password upon their next connection.");
     public static final Component SESSIONS_DISABLED_ERROR_MESSAGE = buildMessage("The session system is disabled. Please enable it and restart the server to perform this action.");
+    public static final Component SESSIONS_PLAYER_ADDED_MESSAGE = buildMessage("The session for the given player has been saved.");
+    public static final Component SESSIONS_PLAYER_DELETED_MESSAGE = buildMessage("The session for the given player has been deleted. They will need to enter the server password for your next connection.");
+    public static final Component SESSIONS_SELF_DELETED_MESSAGE = buildMessage("Your session has been deleted. You will need to enter the server password for your next connection.");
+
+    private static final TextColor WHITE = TextColor.color(0xFFFFFF);
+    private static final Component ENABLED = Component.text("Enabled").color(TextColor.color(0x5FE298));
+    private static final Component DISABLED = Component.text("Disabled").color(TextColor.color(0xE25F5F));
+    public static Component getStatusMessage(boolean isPasswordEnabled, boolean isSessionsEnabled, Integer sessionNumber) {
+        Component text = PLUGIN_NAME.append(Component.text(" --------------").color(WHITE).appendNewline()
+                .append(Component.text("Password status: ")).append(isPasswordEnabled ? ENABLED : DISABLED).appendNewline()
+                .append(Component.text("Sessions status: ")).append(isSessionsEnabled ? ENABLED : DISABLED).appendNewline());
+
+        if(sessionNumber != null) {
+            text = text.append(Component.text("Session number: ").color(WHITE)).append(Component.text(sessionNumber).color(TextColor.color(0x5FBBE2))).appendNewline();
+        }
+
+        text = text.append(Component.text("---------------------------").color(WHITE));
+
+        return text;
+    }
 }

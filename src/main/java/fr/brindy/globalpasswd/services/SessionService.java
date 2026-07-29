@@ -19,7 +19,7 @@ import java.util.Calendar;
 public class SessionService {
     private final JavaPlugin plugin;
     private final ConfigService configService;
-    private Connection connection;
+    private final Connection connection;
     private boolean isEnabled;
 
     private static final String getSessionExistenceQuery = """
@@ -47,12 +47,20 @@ public class SessionService {
         WHERE uuid = ?;
     """;
 
+    private static final String deletePlayerSessionQuery = """
+        DELETE FROM sessions
+        WHERE uuid = ?;
+    """;
+
     public SessionService(JavaPlugin plugin, ConfigService configService) throws SQLException, DirectoryCreationException {
         this.plugin = plugin;
         this.configService = configService;
 
-        if(configService.getSessionsEnabled()) {
-            enableSessions();
+        try {
+            this.connection = DriverManager.getConnection("jdbc:sqlite:" + getDatabasePath());
+            createDatabase();
+        } catch (SQLException | DirectoryCreationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -85,20 +93,45 @@ public class SessionService {
         }
     }
 
+    public void deletePlayerSession(String playerId) {
+        try(PreparedStatement statement = this.connection.prepareStatement(deletePlayerSessionQuery)) {
+            statement.setString(1, playerId);
+            statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void deleteAllSessions() {
         try(Statement statement = this.connection.createStatement()) {
             statement.execute(
                 """
-                    DELETE FROM sessions;
-                    """
+                DELETE FROM sessions;
+                """
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean isEnabled() {
-        return this.isEnabled;
+    public Integer getSessionCount() {
+        if(connection != null) {
+            try(Statement statement = this.connection.createStatement()) {
+                ResultSet result = statement.executeQuery(
+                    """
+                    SELECT COUNT(*)
+                    FROM sessions;
+                    """
+                );
+    
+                return result.getInt(1);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return null;
+        }
+        
     }
 
     private boolean doesSessionExists(String uuid) {
@@ -168,18 +201,7 @@ public class SessionService {
         return folder.getAbsolutePath() + File.separator + Constants.SESSIONS_FILE_NAME;
     }
 
-    public void enableSessions() {
-        try {
-            this.connection = DriverManager.getConnection("jdbc:sqlite:" + getDatabasePath());
-            createDatabase();
-        } catch (SQLException | DirectoryCreationException e) {
-            throw new RuntimeException(e);
-        }
-
-        this.isEnabled = true;
-    }
-
-    public void disableSessions() throws CloseDatabaseConnectionException {
+    public void disconnectDatabase() {
         try {
             if(this.connection != null && !this.connection.isClosed()) {
                 this.connection.close();
@@ -187,7 +209,5 @@ public class SessionService {
         } catch (SQLException e) {
             throw new CloseDatabaseConnectionException(e.getMessage());
         }
-
-        this.isEnabled = false;
     }
 }
