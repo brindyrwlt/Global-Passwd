@@ -124,22 +124,24 @@ public class PasswdCommand {
     }
 
     private int managePlayerSession(CommandContext<CommandSourceStack> context, Consumer<String> func, Component message) {
+        CommandSender sender = context.getSource().getSender();
         final Collection<PlayerProfile> players;
         try {
             players = context.getArgument("players", PlayerProfileListResolver.class).resolve(context.getSource());
-        } catch (CommandSyntaxException e) {
-            throw new RuntimeException(e);
-        }
 
-        for(final PlayerProfile player : players) {
-            UUID playerId = player.getId();
+            for(final PlayerProfile player : players) {
+                UUID playerId = player.getId();
 
-            if(playerId != null) {
-                func.accept(playerId.toString());
+                if(playerId != null) {
+                    func.accept(playerId.toString());
+                }
             }
-        }
 
-        messageUser(context.getSource().getSender(), message);
+            messageUser(sender, message);
+        } catch (CommandSyntaxException e) {
+            // If player does not exist
+            messageUser(sender, Constants.SESSIONS_PLAYER_DOESNT_EXIST_MESSAGE);
+        }
 
         return Command.SINGLE_SUCCESS;
     }

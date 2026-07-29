@@ -37,8 +37,6 @@ public final class Main extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
-        configService.setSessionService(sessionService);
-
         // Events
         registerEvent(new PlayerConnectionEvent(authService, sessionService, configService));
 

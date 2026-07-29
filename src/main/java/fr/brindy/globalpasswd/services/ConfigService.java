@@ -6,17 +6,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class ConfigService {
-    private SessionService sessionService;
     private final FileConfiguration config;
     private final File configFile;
 
     public ConfigService(FileConfiguration config, File configFile) {
         this.config = config;
         this.configFile = configFile;
-    }
-
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
     }
 
     public boolean getEnabled() {

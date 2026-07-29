@@ -59,9 +59,9 @@ public class Constants {
     public static final Component PASSWD_SESSIONS_ALREADY_ENABLED_MESSAGE = buildMessage("The session system is already enabled.");
     public static final Component PASSWD_SESSIONS_ALREADY_DISABLED_MESSAGE = buildMessage("The session system is already disabled.");
     public static final Component SESSIONS_DELETE_ALL_MESSAGE = buildMessage("All player sessions have been deleted. Everyone will need to re-enter the server password upon their next connection.");
-    public static final Component SESSIONS_DISABLED_ERROR_MESSAGE = buildMessage("The session system is disabled. Please enable it and restart the server to perform this action.");
     public static final Component SESSIONS_PLAYER_ADDED_MESSAGE = buildMessage("The session for the given player has been saved.");
     public static final Component SESSIONS_PLAYER_DELETED_MESSAGE = buildMessage("The session for the given player has been deleted. They will need to enter the server password for your next connection.");
+    public static final Component SESSIONS_PLAYER_DOESNT_EXIST_MESSAGE = buildMessage("This player does not exist.");
     public static final Component SESSIONS_SELF_DELETED_MESSAGE = buildMessage("Your session has been deleted. You will need to enter the server password for your next connection.");
 
     private static final TextColor WHITE = TextColor.color(0xFFFFFF);
