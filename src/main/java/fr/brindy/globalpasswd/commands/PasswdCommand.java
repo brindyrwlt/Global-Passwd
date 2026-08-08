@@ -45,21 +45,28 @@ public class PasswdCommand {
 
     public LiteralCommandNode<CommandSourceStack> getCommand() {
         return Commands.literal("passwd")
+                // Enable password
                 .then(simpleArgument(
                     "enable",
                     context -> togglePlugin(context, true),
                     Constants.PASSWD_TOGGLE_PERMISSION
                 ))
+
+                // Disable password
                 .then(simpleArgument(
                     "disable",
                     context -> togglePlugin(context, false),
                     Constants.PASSWD_TOGGLE_PERMISSION
                 ))
+
+                // Status of the different systems
                 .then(simpleArgument(
                     "status",
                     this::showStatus,
                     Constants.PASSWD_STATUS_PERMISSION
                 ))
+
+                // Change (password)
                 .then(
                     Commands.literal("change")
                         .requires(Commands.restricted(
@@ -70,25 +77,37 @@ public class PasswdCommand {
                                 .executes(this::changePassword)
                         )
                 )
+
+                // Sessions management
                 .then(
                     Commands.literal("sessions")
+
+                        // Enabling sessions
                         .then(simpleArgument(
                             "enable",
                             context -> toggleSessions(context, true),
                             Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
                         ))
+
+                        // Disabling sessions
                         .then(simpleArgument(
                             "disable",
                             context -> toggleSessions(context, false),
                             Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
                         ))
+
+                        // Deleting sessions
                         .then(
                             Commands.literal("delete")
+
+                                // Deletes every session stored in the database
                                 .then(simpleArgument(
                                     "all",
                                     this::deleteAllSessions,
                                     Constants.PASSWD_SESSIONS_DELETE_ALL_PERMISSION
                                 ))
+
+                                // Deletes the session of a specified player
                                 .then(
                                     Commands.argument("players", ArgumentTypes.playerProfiles())
                                         .requires(Commands.restricted(
@@ -96,9 +115,11 @@ public class PasswdCommand {
                                         ))
                                         .executes(context -> managePlayerSession(context, sessionService::deletePlayerSession, Constants.SESSIONS_PLAYER_DELETED_MESSAGE))
                                 )
-                                // If there is no argument provided
+                                // If there is no argument provided, deletes the sender's session
                                 .executes(this::deleteSenderSession)
                         )
+
+                        // Adding sessions for a given player
                         .then(
                             Commands.literal("add")
                                 .requires(Commands.restricted(

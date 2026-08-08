@@ -47,6 +47,7 @@ public class AuthService {
     private byte[] getHash(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] salt;
 
+        // Getting the salt file from the resources folder
         try (InputStream saltFile = this.getClass().getClassLoader().getResourceAsStream("salt")) {
             salt = Objects.requireNonNull(saltFile).readAllBytes();
         }

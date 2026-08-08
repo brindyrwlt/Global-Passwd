@@ -20,7 +20,6 @@ public class SessionService {
     private final JavaPlugin plugin;
     private final ConfigService configService;
     private final Connection connection;
-    private boolean isEnabled;
 
     private static final String getSessionExistenceQuery = """
         SELECT COUNT(*)
@@ -64,6 +63,10 @@ public class SessionService {
         }
     }
 
+    /**
+     * Saves (or updates) a player session.
+     * @param uuid The UUID of the player
+     */
     public void validateSession(String uuid) {
         if(doesSessionExists(uuid)) {
             updatePlayer(uuid);
@@ -106,6 +109,7 @@ public class SessionService {
         try(Statement statement = this.connection.createStatement()) {
             statement.execute(
                 """
+                -- noinspection SqlWithoutWhere
                 DELETE FROM sessions;
                 """
             );
@@ -132,6 +136,16 @@ public class SessionService {
             return null;
         }
         
+    }
+
+    public void disconnectDatabase() {
+        try {
+            if(this.connection != null && !this.connection.isClosed()) {
+                this.connection.close();
+            }
+        } catch (SQLException e) {
+            throw new CloseDatabaseConnectionException(e.getMessage());
+        }
     }
 
     private boolean doesSessionExists(String uuid) {
@@ -199,15 +213,5 @@ public class SessionService {
     private String getDatabasePath() throws DirectoryCreationException {
         File folder = DataFolder.getDataFolder(this.plugin);
         return folder.getAbsolutePath() + File.separator + Constants.SESSIONS_FILE_NAME;
-    }
-
-    public void disconnectDatabase() {
-        try {
-            if(this.connection != null && !this.connection.isClosed()) {
-                this.connection.close();
-            }
-        } catch (SQLException e) {
-            throw new CloseDatabaseConnectionException(e.getMessage());
-        }
     }
 }
