@@ -16,7 +16,7 @@ public class Constants {
     public static final String PASSWD_STATUS_PERMISSION = "globalpasswd.passwd.status";
     public static final String PASSWD_CHANGE_PERMISSION = "globalpasswd.passwd.change";
     public static final String PASSWD_ENABLE_PERMISSION = "globalpasswd.passwd.enable";
-    public static final String PASSWD_DISABLE_PERMISSION = "globalpasswd.passwd.toggle";
+    public static final String PASSWD_DISABLE_PERMISSION = "globalpasswd.passwd.disable";
     public static final String PASSWD_SESSIONS_ENABLE_PERMISSION = "globalpasswd.passwd.sessions.enable";
     public static final String PASSWD_SESSIONS_DISABLE_PERMISSION = "globalpasswd.passwd.sessions.disable";
     public static final String PASSWD_SESSIONS_DELETE_ALL_PERMISSION = "globalpasswd.passwd.sessions.delete.all";
