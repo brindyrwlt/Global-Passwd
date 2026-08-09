@@ -3,7 +3,7 @@ Global Passwd is a Minecraft plugin that, once installed on your server, lets yo
 When the server is locked, every player trying to connect will be prompted to enter the password. 
 If the password is correct, they will successfully be connected; otherwise they will be disconnected.
 
-## Security
+### Security
 
 The password is stored on the server hardware and never leaves it. 
 It is stored using SHA256 hashing, meaning the password can't be read at all after being saved. 
@@ -12,7 +12,7 @@ This also means you won't be able to recover your server password if you forget 
 The version of the plugin shipped by me uses a randomized salt that is not committed to GitHub.
 See the "Documentation" section in this file to see how to compile your own version of the plugin with a custom salt to enhance your server security.
 
-## Sessions
+### Sessions
 
 To enhance the user experience, this plugin is shipped with a system called "sessions".
 When a player trying to connect types in the right password, their UUID will be saved in a local database stored directly on your server.
@@ -21,12 +21,16 @@ Sessions don't last for a lifetime. By default, a session lasts **30 days**. You
 
 This system can be disabled. See the "Configuration" part of the documentation below.
 
-## Customization
+### Customization
 
 Any server owner can customize the plugin to their liking by directly typing into the chat the "passwd" command, or by editing the `config.yml` file on your server.
 For further information, please refer to the documentation below.
 
+<br>
+
 # Documentation
+
+<br>
 
 ## How to use
 
@@ -37,6 +41,8 @@ You can download the plugin on Modrinth, Curseforge, or GitHub (links to be adde
 
 You can also clone this repo and compile the plugin yourself, using a custom salt to enhance your server security.
 See the 'Enhance the server security' part of this documentation for further information.
+
+<br>
 
 ## Configuration
 
@@ -150,6 +156,8 @@ This command can be used to clear the local database from time to time, as inval
 
 > Permission associated: 'globalpasswd.passwd.sessions.remove.delete.all'.
 
+<br>
+
 ### Config file
 
 The `config.yml` file is located in your Minecraft server directory, under the `./plugins/GlobalPasswd/` directory.
@@ -207,6 +215,8 @@ If the obtained date is earlier than the current date of your server, the player
 > Possible values: any positive integer.
 
 > Default value: 30 days, 0 hours, 0 minutes, 0 seconds
+
+<br>
 
 ## Enhance your server protection
 
@@ -278,6 +288,8 @@ Start the server, and everything should work just fine!
 > In this case, your old password won't work anymore. 
 > Please run the `/passwd change <password>` command to change the password. 
 > Your new password will use the new salt.
+
+<br>
 
 # Credits
 
