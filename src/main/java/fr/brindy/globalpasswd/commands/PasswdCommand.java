@@ -49,14 +49,14 @@ public class PasswdCommand {
                 .then(simpleArgument(
                     "enable",
                     context -> togglePlugin(context, true),
-                    Constants.PASSWD_TOGGLE_PERMISSION
+                    Constants.PASSWD_ENABLE_PERMISSION
                 ))
 
                 // Disable password
                 .then(simpleArgument(
                     "disable",
                     context -> togglePlugin(context, false),
-                    Constants.PASSWD_TOGGLE_PERMISSION
+                    Constants.PASSWD_DISABLE_PERMISSION
                 ))
 
                 // Status of the different systems
@@ -86,14 +86,14 @@ public class PasswdCommand {
                         .then(simpleArgument(
                             "enable",
                             context -> toggleSessions(context, true),
-                            Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
+                            Constants.PASSWD_SESSIONS_ENABLE_PERMISSION
                         ))
 
                         // Disabling sessions
                         .then(simpleArgument(
                             "disable",
                             context -> toggleSessions(context, false),
-                            Constants.PASSWD_SESSIONS_TOGGLE_PERMISSION
+                            Constants.PASSWD_SESSIONS_DISABLE_PERMISSION
                         ))
 
                         // Deleting sessions
