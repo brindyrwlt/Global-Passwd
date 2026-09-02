@@ -298,7 +298,7 @@ Start the server, and everything should work just fine!
 
 # Report a bug
 
-Feel free to [open an Issue](https://github.com/brindyrwlt/Global-Passwd/issues) on the GitHub page of this plugin if you encounter any bug or thing you would want to change in this plugin.
+Feel free to [open an Issue](https://github.com/brindyrwlt/Global-Passwd/issues) on the GitHub page of this plugin if you encounter any bugs or things you would like to change, add, etc., in this plugin.
 
 <br>
 
@@ -306,4 +306,5 @@ Feel free to [open an Issue](https://github.com/brindyrwlt/Global-Passwd/issues)
 
 This plugin was developed entirely by [me](https://github.com/brindyrwlt). No AI was used during the process.
 
-The use of the Dialog API provided by Paper and the timeout system were inspired by the [Password](https://github.com/foenichs/Password/) plugin developed by [foenichs](https://github.com/foenichs). Please check his work, he make very cool stuff!
+The use of the Dialog API provided by Paper and the timeout system were inspired by the [Password](https://github.com/foenichs/Password/) plugin developed by [foenichs](https://github.com/foenichs).
+Please check his work, he makes very cool stuff!
