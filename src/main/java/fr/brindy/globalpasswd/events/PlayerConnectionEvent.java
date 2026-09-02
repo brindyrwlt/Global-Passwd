@@ -26,7 +26,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-@SuppressWarnings("UnstableApiUsage")
 public class PlayerConnectionEvent implements Listener {
     /**
      * Stores the UUIDs of the players trying to connect. Used to kick them when time to enter password is out.
@@ -51,6 +50,10 @@ public class PlayerConnectionEvent implements Listener {
             PlayerConfigurationConnection connection = event.getConnection();
             UUID uuid = connection.getProfile().getId();
             if(uuid == null) {
+                return;
+            }
+
+            if(!authService.doesPasswordExist()) {
                 return;
             }
 

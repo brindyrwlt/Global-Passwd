@@ -31,6 +31,17 @@ This system can be disabled. See the "Configuration" part of the documentation b
 Any server owner can customize the plugin to their liking by directly typing into the chat the "passwd" command, or by editing the `config.yml` file on your server.
 For further information, please refer to the documentation below.
 
+### Start using the plugin
+
+You can download the plugin on Modrinth (TODO) and Curseforge (TODO).
+You can also use the [Releases tab](https://github.com/brindyrwlt/Global-Passwd/releases) on the GitHub page of this plugin.
+
+Once downloaded, move the .jar file into the `./plugins` directory of your Minecraft server.
+
+> Warning: The plugin isn't shipped with a default password.
+> This means that if you don't set up a password, no password will be asked of the player.
+>
+> Please use the '**passwd change \<password>**' command once the plugin is installed.
 <br>
 
 # Documentation

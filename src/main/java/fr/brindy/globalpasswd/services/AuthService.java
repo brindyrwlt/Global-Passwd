@@ -44,6 +44,14 @@ public class AuthService {
         Files.write(path, getHash(password));
     }
 
+    public boolean doesPasswordExist() {
+        try {
+            return Files.exists(getKeyFile());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private byte[] getHash(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] salt;
 
