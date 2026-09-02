@@ -300,6 +300,8 @@ Start the server, and everything should work just fine!
 
 Feel free to [open an Issue](https://github.com/brindyrwlt/Global-Passwd/issues) on the GitHub page of this plugin if you encounter any bug or thing you would want to change in this plugin.
 
+<br>
+
 # Credits
 
 This plugin was developed entirely by [me](https://github.com/brindyrwlt). No AI was used during the process.
