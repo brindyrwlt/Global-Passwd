@@ -1,7 +1,12 @@
-# Global Passwd, a secure, convenient, and highly configurable server-protection plugin
+![banner.png](banner.png)
+
 Global Passwd is a Minecraft plugin that, once installed on your server, lets you set a global password that locks the server. 
 When the server is locked, every player trying to connect will be prompted to enter the password. 
 If the password is correct, they will successfully be connected; otherwise they will be disconnected.
+
+This screen will appear when you try to join the server :
+
+![Screenshot From 2026-09-02 19-01-03.png](password_screen.png)
 
 ### Security
 
