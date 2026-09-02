@@ -6,7 +6,7 @@ If the password is correct, they will successfully be connected; otherwise they 
 
 This screen will appear when you try to join the server :
 
-![Screenshot From 2026-09-02 19-01-03.png](password_screen.png)
+![password_screen](password_screen.png)
 
 ### Security
 
