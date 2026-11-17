@@ -33,7 +33,7 @@ For further information, please refer to the documentation below.
 
 ### Start using the plugin
 
-You can download the plugin on Modrinth (TODO) and Curseforge (TODO).
+You can download the plugin on [Modrinth](https://modrinth.com/plugin/global-passwd) and [Curseforge](https://www.curseforge.com/minecraft/bukkit-plugins/global-passwd).
 You can also use the [Releases tab](https://github.com/brindyrwlt/Global-Passwd/releases) on the GitHub page of this plugin.
 
 Once downloaded, move the .jar file into the `./plugins` directory of your Minecraft server.
@@ -291,7 +291,7 @@ Go back to your terminal, and go back to the root of the project (`cd ../../../`
 Run this command: `./gradlew build`.
 If your environment is well-configured, then the plugin will be compiled!
 
-To find the compiled plugin, go into the `./build/libs/` directory, and find the .jar named after this plugin (likely global-passwd-[...].jar).
+To find the compiled plugin, go into the `./build/libs/` directory, and find the .jar named after this plugin (likely global-passwd-\[...].jar).
 
 ### 5. Use the compiled plugin
 

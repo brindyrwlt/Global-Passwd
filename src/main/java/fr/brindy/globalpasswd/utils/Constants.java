@@ -46,6 +46,13 @@ public class Constants {
     public static final Component PLUGIN_TAG = Component.text("[").append(Constants.PLUGIN_NAME).append(Component.text("] "));
     public static final Component PLUGIN_START_MESSAGE_1 = Component.text("The Global Passwd plugin is enabled. Your server is now protected!").color(TextColor.color(0xFFFFFF));
     public static final Component PLUGIN_START_MESSAGE_2 = Component.text("If you want to change your password, please enter the ").append(Component.text("'passwd change <new password>'").color(TextColor.color(0xFFFFFF)).append(Component.text(" command.")));
+    public static final Component WARN_NO_PASSWORD_SET = Component.text("""
+    No password has been set, your server is unprotected.
+             \
+            Please use 'passwd change <new password>' to set a new password.
+             \
+            If this is intentional, please disable the plugin by executing the 'passwd disable' command.
+    """);
 
     private static Component buildMessage(String message) {
         return Constants.PLUGIN_TAG.append(Component.text(message));

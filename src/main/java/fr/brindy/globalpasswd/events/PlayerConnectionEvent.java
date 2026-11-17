@@ -17,13 +17,18 @@ import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerConnectionEvent implements Listener {
@@ -35,13 +40,15 @@ public class PlayerConnectionEvent implements Listener {
     private final AuthService authService;
     private final SessionService sessionService;
     private final ConfigService configService;
+    private final ComponentLogger logger;
 
     private static final Dialog authDialog = createDialog();
 
-    public PlayerConnectionEvent(AuthService authService, SessionService sessionService, ConfigService configService) {
+    public PlayerConnectionEvent(AuthService authService, SessionService sessionService, ConfigService configService, ComponentLogger logger) {
         this.authService = authService;
         this.sessionService = sessionService;
         this.configService = configService;
+        this.logger = logger;
     }
 
     @EventHandler
@@ -54,6 +61,7 @@ public class PlayerConnectionEvent implements Listener {
             }
 
             if(!authService.doesPasswordExist()) {
+                logger.warn(Constants.WARN_NO_PASSWORD_SET);
                 return;
             }
 
