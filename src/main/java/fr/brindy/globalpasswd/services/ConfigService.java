@@ -52,6 +52,10 @@ public class ConfigService {
         return config.getInt("session-duration-seconds");
     }
 
+    public boolean getIsStartMessageShown() {
+        return config.getBoolean("start-message-is-shown");
+    }
+
     public void saveConfig() {
         try {
             config.save(configFile);

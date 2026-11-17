@@ -47,7 +47,9 @@ public final class Main extends JavaPlugin {
             commands.registrar().register(passwdCommand.getCommand());
         });
 
-        printStartMessage();
+        if(configService.getIsStartMessageShown()) {
+            printStartMessage();
+        }
     }
 
     @Override

@@ -14,3 +14,6 @@ session-duration-days: 30
 session-duration-hours: 0
 session-duration-minutes: 0
 session-duration-seconds: 0
+
+# If the message ("The Global Passwd plugin is enabled. [...]") is shown in the admin console when the plugin starts
+start-message-is-shown: true
