@@ -38,7 +38,7 @@ public final class Main extends JavaPlugin {
         }
 
         // Events
-        registerEvent(new PlayerConnectionEvent(authService, sessionService, configService));
+        registerEvent(new PlayerConnectionEvent(authService, sessionService, configService, logger));
 
         // Commands
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
