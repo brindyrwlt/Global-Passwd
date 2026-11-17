@@ -2,7 +2,7 @@ name: GlobalPasswd
 version: '${version}'
 
 main: fr.brindy.globalpasswd.Main
-api-version: '26.2'
+api-version: '26.3'
 load: POSTWORLD
 
 folia-supported: true
